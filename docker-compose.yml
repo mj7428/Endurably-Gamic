@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # The MySQL Database Service
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: '1234'
+      MYSQL_DATABASE: 'endurablygamic_db'
+    ports:
+      # This exposes the database to your Windows machine for debugging if needed
+      # Format is HOST:CONTAINER
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  # Your Spring Boot Application Service
+  app:
+    build: .
+    restart: always
+    ports:
+      - "80:8080"
+    environment:
+      # We pass the database URL to the app as an environment variable
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/endurablygamic_db
+    depends_on:
+      - db
+
+volumes:
+  db-data:
+
