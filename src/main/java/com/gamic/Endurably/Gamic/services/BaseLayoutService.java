@@ -60,4 +60,13 @@ public class BaseLayoutService {
 
         baseLayoutRepository.save(newLayout);
     }
+
+    public Page<BaseLayout> findBasesByCurrentUser(Pageable pageable) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        Users currentUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found in database"));
+
+        return baseLayoutRepository.findAllBySubmittedBy(currentUser, pageable);
+    }
 }

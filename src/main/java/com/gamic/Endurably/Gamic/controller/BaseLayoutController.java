@@ -47,5 +47,12 @@ public class BaseLayoutController {
         return ResponseEntity.ok("Base Layout created successfully!");
     }
 
+    @GetMapping("/my-bases")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Page<BaseLayout>> getMyBaseLayouts(Pageable pageable) {
+        Page<BaseLayout> layouts = baseLayoutService.findBasesByCurrentUser(pageable);
+        return ResponseEntity.ok(layouts);
+    }
+
     
 }

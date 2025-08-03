@@ -19,6 +19,10 @@ import com.gamic.Endurably.Gamic.dto.TeamRegistrationResponseDto;
 import com.gamic.Endurably.Gamic.repository.TournamentRepository;
 import com.gamic.Endurably.Gamic.services.TournamentService;
 
+import com.gamic.Endurably.Gamic.dto.TournamentListDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import jakarta.validation.Valid;
 
 @RestController
@@ -52,5 +56,11 @@ public class TournamentController {
     public ResponseEntity<List<TeamRegistrationResponseDto>> getRegistrations(@PathVariable Long tournamentId) {
         List<TeamRegistrationResponseDto> registrations = tournamentService.getRegistrationsForTournament(tournamentId);
         return ResponseEntity.ok(registrations);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<TournamentListDto>> getAllTournaments(Pageable pageable) {
+        Page<TournamentListDto> tournaments = tournamentService.findAllTournaments(pageable);
+        return ResponseEntity.ok(tournaments);
     }
 }

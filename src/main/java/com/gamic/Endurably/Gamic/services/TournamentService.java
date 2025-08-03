@@ -16,6 +16,10 @@ import com.gamic.Endurably.Gamic.dto.PlayerSubmissionResponseDto;
 import com.gamic.Endurably.Gamic.dto.TeamRegistrationResponseDto;
 import com.gamic.Endurably.Gamic.repository.TournamentRepository;
 
+import com.gamic.Endurably.Gamic.dto.TournamentListDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class TournamentService {
 
@@ -93,4 +97,22 @@ public class TournamentService {
         dto.setValue(fieldValue.getValue());
         return dto;
     }
+
+    @Transactional(readOnly = true)
+    public Page<TournamentListDto> findAllTournaments(Pageable pageable) {
+        return tournamentRepository.findAll(pageable)
+                .map(this::mapToTournamentListDto);
+    }
+
+    private TournamentListDto mapToTournamentListDto(Tournament tournament) {
+        TournamentListDto dto = new TournamentListDto();
+        dto.setId(tournament.getId());
+        dto.setName(tournament.getName());
+        dto.setGameName(tournament.getGameName());
+        dto.setStartDate(tournament.getStartDate());
+        dto.setPrizePool(tournament.getPrizePool());
+        dto.setTeamSize(tournament.getTeamSize());
+        return dto;
+    }
+
 }
