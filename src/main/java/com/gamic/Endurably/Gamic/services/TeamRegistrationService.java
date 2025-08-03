@@ -3,6 +3,9 @@ package com.gamic.Endurably.Gamic.services;
 import com.gamic.Endurably.Gamic.Entity.*;
 import com.gamic.Endurably.Gamic.dto.TeamRegistrationRequestDto;
 import com.gamic.Endurably.Gamic.repository.*;
+
+import java.time.LocalDateTime;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,10 @@ public class TeamRegistrationService {
     public TeamRegistration registerTeamForTournament(Long tournamentId, TeamRegistrationRequestDto requestDto) {
         Tournament tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new IllegalStateException("Tournament not found with ID: " + tournamentId));
+
+        if (tournament.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Registration for this tournament has closed.");
+        }
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Users currentUser = userRepository.findByEmail(userDetails.getUsername())
